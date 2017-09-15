@@ -1,4 +1,12 @@
+#!/usr/bin/env python
+
+"""
+    A simple script that should scrape courses available on https://onlinecourses.ooo
+    Still work in progress, so yeah.. not much features for now!
+"""
+
 import requests
+import sys
 from bs4 import BeautifulSoup
 
 url = "http://onlinecourses.ooo"
