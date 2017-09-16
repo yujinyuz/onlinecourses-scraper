@@ -58,11 +58,11 @@ def get_course_details(course):
 
 def main():
     url = "http://onlinecourses.ooo/page/{page_number}"
-    num_of_pages = int(sys.argv[1]) if len(sys.argv[1]) > 0 else 1
+    num_of_pages = int(sys.argv[1]) if len(sys.argv) > 1 else 1
     items = 0
 
-    for i in range(1, num_of_pages + 1):
-        course_request = get_request(url, page_number=i)
+    for i in range(num_of_pages):
+        course_request = get_request(url, page_number=i + 1)
         course_soup = BeautifulSoup(course_request.text, 'html.parser')
         courses = get_courses(course_soup)
 
@@ -73,7 +73,7 @@ def main():
 
             items = items + 1
 
-    print "Total number of courses: {items}".format(items=items)
+    print "Total number of courses scraped: {items}".format(items=items)
 
 if __name__ == '__main__':
     main()
