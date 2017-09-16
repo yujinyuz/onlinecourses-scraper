@@ -13,10 +13,13 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 display_template = """
+=========================================================================
 Title: {title}
     Description: {description}
+
 Creation Date: {creation_date}
 Categories: {categories}
+=========================================================================
 """
 
 def get_request(url, page_number=1):
@@ -55,11 +58,11 @@ def get_course_details(course):
 
 def main():
     url = "http://onlinecourses.ooo/page/{page_number}"
-    num_of_pages = int(sys.argv[1])
+    num_of_pages = int(sys.argv[1]) if len(sys.argv[1]) > 0 else 1
     items = 0
 
     for i in range(1, num_of_pages + 1):
-        course_request = get_request(url)
+        course_request = get_request(url, page_number=i)
         course_soup = BeautifulSoup(course_request.text, 'html.parser')
         courses = get_courses(course_soup)
 
