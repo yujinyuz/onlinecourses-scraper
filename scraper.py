@@ -8,46 +8,69 @@
 import requests
 import sys
 from bs4 import BeautifulSoup
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
-url = "http://onlinecourses.ooo"
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
-courses_request = requests.get(url, verify=False)
+display_template = """
+Title: {title}
+    Description: {description}
+Creation Date: {creation_date}
+Categories: {categories}
+"""
 
-print courses_request.status_code
+def get_request(url, page_number=1):
+    url = url.format(page_number=page_number)
 
-course_soup = BeautifulSoup(courses_request.text, 'html.parser')
+    course_request = requests.get(url, verify=False)
 
-items = 0
+    if not course_request.status_code == 200:
+        return False
+    else:
+        return course_request
 
-for link in course_soup.findAll('div', {'class': 'item-frame'}):
+def get_courses(soup):
+    course_soup = soup
 
+    return course_soup.findAll('div', {'class': 'item-frame'})
+
+def get_course_details(course):
     details = {}
-
-    for item_panel in link.findAll('div', {'class': 'item-panel'}):
-        title = item_panel.find('h3', {'class': 'entry-title'}).text
-        description = item_panel.find('p', {'class': 'desc entry-content'}).text
-
-        details['title'] = title.encode('utf8')
-        details['description'] = description.encode('utf8')
-
-    for item_date in link.findAll('div', {'class': 'calendar'}):
-        creation_date = item_date.find('time', {'class': 'entry-date published'}).text
-        details['creation_date'] = creation_date.encode('utf8')
-
     categories = []
 
-    for item_taxonomy in link.findAll('div', {'class': 'taxonomy'}):
+    for item_detail in course.findAll('div', {'class': 'item-panel'}):
+        details['title'] = item_detail.find('h3', {'class': 'entry-title'}).text.encode('utf8')
+        details['description'] = item_detail.find('p', {'class': 'desc entry-content'}).text.encode('utf8')
+
+    for item_date in course.findAll('div', {'class': 'calendar'}):
+        details['creation_date'] = item_date.find('time', {'class': 'entry-date published'}).text.encode('utf8')
+
+    for item_taxonomy in course.findAll('div', {'class': 'taxonomy'}):
         for category in item_taxonomy.find('p', {'class': 'category'}).findAll('a'):
             categories.append(category.text.encode('utf8'))
 
-        details['categories'] = categories
-    items = items + 1
+    details['categories'] = categories
 
-    print """
-    Title: {title}
-    Description: {description}
-    Creation Date: {creation_date}
-    Categories: {categories}
-    """.format(title=details['title'], description=details['description'], creation_date=details['creation_date'], categories=', '.join(details['categories']))
+    return details
 
-print "Total number of courses: {items}".format(items=items)
+def main():
+    url = "http://onlinecourses.ooo/page/{page_number}"
+    num_of_pages = int(sys.argv[1])
+    items = 0
+
+    for i in range(1, num_of_pages + 1):
+        course_request = get_request(url)
+        course_soup = BeautifulSoup(course_request.text, 'html.parser')
+        courses = get_courses(course_soup)
+
+        for course in courses:
+            details = get_course_details(course)
+
+            print display_template.format(title=details['title'], description=details['description'], creation_date=details['creation_date'], categories=', '.join(details['categories']))
+
+            items = items + 1
+
+    print "Total number of courses: {items}".format(items=items)
+
+if __name__ == '__main__':
+    main()
