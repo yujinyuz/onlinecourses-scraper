@@ -7,12 +7,14 @@ Usage:
     scraper.py (-h | --help)
     scraper.py --pages=<num_of_pages>
     scraper.py --courses=<num_of_courses>
+    scraper.py --interests=<interests>
 
 Options:
     -h --help                   Show this screen.
     --version                   Show version.
     --pages=<num_of_pages>      Specify number of pages to be scraped.
     --courses=<num_of_courses>  Specify number of courses to be scraped.
+    --interests=<interests>     Specify your interests using comma-separated values. E.g. --interest=Python, Web Development, Javascript
 """
 
 import logging
