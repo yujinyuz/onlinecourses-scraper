@@ -13,18 +13,22 @@ It should display stuffs that I'm interested to.
 
 First create a virtualenv (I prefer using virtualenvwrapper):
 
-`pip install virtualenvwrapper`
+`$ pip install virtualenvwrapper`
 
 Then do:
 
-`mkvirtualenv scraper`
-`workon scraper`
+```
+$ mkvirtualenv scraper
+$ workon scraper
+```
 
 If the above says `command not found` try executing
 
 ```
-source `which virtualenvwrapper.sh`
+$ source `which virtualenvwrapper.sh`
 ``` 
+After that, do:
+`$ pip install -r requirements.txt`
 
 # Usage
 ```
