@@ -11,7 +11,13 @@ It should display stuffs that I'm interested to.
 
 # Installation
 
-First create a virtualenv (I prefer using virtualenvwrapper):
+First of all, clone this repository:
+```
+$ git clone https://github.com/YujinYuz/onlinecourses-scraper.git
+$ cd onlinecourses-scraper
+```
+
+Then, create a virtualenv (I prefer using virtualenvwrapper):
 
 `$ pip install virtualenvwrapper`
 
@@ -28,7 +34,9 @@ If the above says `command not found` try executing
 $ source `which virtualenvwrapper.sh`
 ``` 
 After that, do:
-`$ pip install -r requirements.txt`
+```
+$ pip install -r requirements.txt
+```
 
 # Usage
 ```
