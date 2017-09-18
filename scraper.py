@@ -1,20 +1,30 @@
 #!/usr/bin/env python
-
+# -*- coding: utf-8 -*-
 
 """OnlineCourses Scraper.
 
 Usage:
     scraper.py (-h | --help)
-    scraper.py --pages=<num_of_pages>
-    scraper.py --courses=<num_of_courses>
-    scraper.py --interests=<interests>
+    scraper.py get-courses [options]
 
 Options:
     -h --help                   Show this screen.
     --version                   Show version.
     --pages=<num_of_pages>      Specify number of pages to be scraped.
+                                [default: 1]
     --courses=<num_of_courses>  Specify number of courses to be scraped.
-    --interests=<interests>     Specify your interests using comma-separated values. E.g. --interest=Python, Web Development, Javascript
+                                [default: 0]
+    --add-interests             Prompt for topics that interests the user.
+                                [default: False]
+
+Examples:
+    scraper.py --pages=5
+    scraper.py --courses=3
+    scraper.py --pages=2 --interests=Python, Javascript
+    scraper.py --pages=3 --courses=12
+
+Author:
+    YujinYuz
 """
 
 import logging
@@ -78,6 +88,7 @@ def get_course_soup(url):
     else:
         return BeautifulSoup(course_request.text, 'html.parser')
 
+
 def get_courses(soup):
     course_soup = soup
 
@@ -105,7 +116,6 @@ def get_course_details(course):
 
     details['categories'] = [ category.text.encode(
         'utf8') for category in item_categories ]
-    details['course_url'] = course_url
     details['udemy_link'] = get_udemy_course_url(course_url)
 
     return details
@@ -113,37 +123,80 @@ def get_course_details(course):
 
 def get_udemy_course_url(course_url):
     course_soup = get_course_soup(course_url)
+    udemy_link = ''
+    link = course_soup.find('div', {'class': 'link-holder'}) \
+                        .find('a') \
+                        .get('href') \
+                        .encode('utf8')
 
-    link = course_soup.find('div', {'class': 'link-holder'}).find('a').get('href').encode('utf8')
-
-    udemy_link = link.split('&')[2].split('=')[1]
-    udemy_link = urllib.unquote(udemy_link).decode('utf8')
+    try:
+        udemy_link = link.split('&')[2].split('=')[1]
+        udemy_link = urllib.unquote(udemy_link).decode('utf8')
+    except Exception as e:
+        logger.warning("Error occured. Unable to parse url: {url} - {exception}".format(url=link, exception=e))
 
     return udemy_link
+
 
 def get_course_url(course):
     course_url = course.find(
         'h3', {'class': 'entry-title'}).find('a').get('href')
     return course_url
 
+def display_to_screen(interests, details):
+    interests = [ interest.strip() for interest in interests.split(',') ]
 
-def main(options):
+    display = [ interest for interest in interests if interest in details['categories'] ]
+
+    for interest in interests:
+        if interest in details['categories'] \
+            or interest in details['title'] \
+            or interest in details['description']:
+                return True
+
+    return False
+
+
+def main():
+    args = docopt(__doc__, version='v0.0.1')
     if not is_connected():
-        return
+        raise
 
     url = "http://onlinecourses.ooo/page/{page_number}"
-    num_of_pages = int(options.get('--pages', 1))
+    num_of_pages = int(args.get('--pages', 1))
+    num_of_courses = int(args.get('--courses', -1))
+    add_interests = args.get('--add-interests', False)
+    interests = ""
+
+    if add_interests:
+        print "Enter your interests using comma-separated values"
+        interests = raw_input("> ")
+
     items = 0
 
     for page in range(num_of_pages):
-        logger.info("Scraping...Page {page} of {pages}".format(page=page + 1, pages=num_of_pages))
+        logger.info("Scraping...Page {page} of {pages}".format(
+            page=page + 1,
+            pages=num_of_pages))
+
         page_request = get_request(url, page_number=page + 1)
         page_soup = BeautifulSoup(page_request.text, 'html.parser')
         courses = get_courses(page_soup)
 
         for course in courses:
             details = get_course_details(course)
-            print display_template.format(title=details['title'], description=details['description'], creation_date=details['creation_date'], categories=', '.join(details['categories']), udemy_link=details['udemy_link'])
+
+            if display_to_screen(interests, details):
+                print display_template.format(
+                    title=details['title'],
+                    description=details['description'],
+                    creation_date=details['creation_date'],
+                    categories=', '.join(details['categories']),
+                    udemy_link=details['udemy_link'])
+
+            if num_of_courses > 0:
+                if items == num_of_courses:
+                    break
 
             items = items + 1
 
@@ -151,5 +204,4 @@ def main(options):
 
 
 if __name__ == '__main__':
-    arguments = docopt(__doc__, version='v0.0.1')
-    main(arguments)
+    main()
