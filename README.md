@@ -1,4 +1,6 @@
 # onlinecourses-scraper
+[![Build Status](https://travis-ci.org/YujinYuz/onlinecourses-scraper.svg?branch=develop)](https://travis-ci.org/YujinYuz/onlinecourses-scraper)
+--------------------------------------
 My personal scraper for https://onlinecourses.ooo
 
 # Summary
