@@ -1,5 +1,5 @@
 # onlinecourses-scraper
-[![Build Status](https://travis-ci.org/YujinYuz/onlinecourses-scraper.svg?branch=develop)](https://travis-ci.org/YujinYuz/onlinecourses-scraper)
+[![Build Status](https://travis-ci.org/YujinYuz/onlinecourses-scraper.svg?branch=develop)](https://travis-ci.org/YujinYuz/onlinecourses-scraper) [![codecov](https://codecov.io/gh/YujinYuz/onlinecourses-scraper/branch/develop/graph/badge.svg)](https://codecov.io/gh/YujinYuz/onlinecourses-scraper)
 --------------------------------------
 My personal scraper for https://onlinecourses.ooo
 
