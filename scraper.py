@@ -194,7 +194,7 @@ def main():
             details = get_course_details(course)
 
             if display_to_screen(interests, details):
-                print display_template.format(
+                print(display_template).format(
                     title=details['title'],
                     description=details['description'],
                     creation_date=details['creation_date'],
