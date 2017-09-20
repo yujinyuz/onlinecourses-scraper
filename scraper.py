@@ -132,8 +132,15 @@ def get_udemy_course_url(course_url):
     try:
         udemy_link = link.split('&')[2].split('=')[1]
         udemy_link = urllib.unquote(udemy_link).decode('utf8')
-    except Exception as e:
-        logger.warning("Error occured. Unable to parse url: {url} - {exception}".format(url=link, exception=e))
+    except IndexError as e:
+        logger.warning("Error occured. Unable to parse url: {url} - {exception}. Trying another method.".format(url=link, exception=e))
+        try:
+            udemy_link = requests.get(link)
+
+            if udemy_link.status_code == 200:
+                udemy_link = udemy_link.url.encode('utf8')
+        except Exception as e:
+            logger.warning("Still unable to parse url: {url} - {exception}.".format(url=link, exception=e))
 
     return udemy_link
 
@@ -163,9 +170,9 @@ def main():
         raise
 
     url = "http://onlinecourses.ooo/page/{page_number}"
-    num_of_pages = int(args.get('--pages', 1))
-    num_of_courses = int(args.get('--courses', -1))
-    add_interests = args.get('--add-interests', False)
+    num_of_pages = int(args['--pages'])
+    num_of_courses = int(args['--courses'])
+    add_interests = args['--add-interests']
     interests = ""
 
     if add_interests:
