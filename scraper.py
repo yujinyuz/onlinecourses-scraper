@@ -176,7 +176,7 @@ def main():
     interests = ""
 
     if add_interests:
-        print "Enter your interests using comma-separated values"
+        print("Enter your interests using comma-separated values")
         interests = raw_input("> ")
 
     items = 0
@@ -207,7 +207,7 @@ def main():
 
             items = items + 1
 
-    print "Total number of courses scraped: {items}".format(items=items)
+    print("Total number of courses scraped: {items}".format(items=items))
 
 
 if __name__ == '__main__':
