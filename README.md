@@ -1,4 +1,7 @@
 # onlinecourses-scraper
+[![Build Status](https://travis-ci.org/YujinYuz/onlinecourses-scraper.svg?branch=develop)](https://travis-ci.org/YujinYuz/onlinecourses-scraper) [![codecov](https://codecov.io/gh/YujinYuz/onlinecourses-scraper/branch/develop/graph/badge.svg)](https://codecov.io/gh/YujinYuz/onlinecourses-scraper) [![Documentation Status](https://readthedocs.org/projects/onlinecourses-scraper/badge/?version=latest)](http://onlinecourses-scraper.readthedocs.io/en/latest/?badge=latest)
+
+--------------------------------------
 My personal scraper for https://onlinecourses.ooo
 
 # Summary
