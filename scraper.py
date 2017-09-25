@@ -129,6 +129,9 @@ def get_udemy_course_url(course_url):
                         .get('href') \
                         .encode('utf8')
 
+    if "udemy" in link:
+        return link
+
     try:
         udemy_link = link.split('&')[2].split('=')[1]
         udemy_link = urllib.unquote(udemy_link).decode('utf8')
