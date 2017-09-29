@@ -29,10 +29,10 @@ Author:
 
 import logging
 import requests
-import sys
 import urllib
 from bs4 import BeautifulSoup
 from docopt import docopt
+from requests.exceptions import ConnectionError
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 FORMAT = "[%(filename)s:%(lineno)s - %(funcName)s()] %(message)s"
@@ -56,15 +56,16 @@ Title: {title}
 
 def is_connected():
     try:
-        test_url = "https://www.google.com"
-        urllib.urlopen(test_url)
-    except:
-        raise Exception('Error: Unable to connect to the internet.')
+        test_url = "https://google.com"
+        requests.get(test_url)
+    except ConnectionError as e:
+        raise Exception("You are not connected to the internet.")
     else:
         logger.info("Connected to the internet. Proceeding...")
         return True
 
     return False
+
 
 def get_request(url, page_number=1):
     url = url.format(page_number=page_number)
@@ -114,8 +115,8 @@ def get_course_details(course):
         'p', {
             'class': 'category'}).findAll('a')
 
-    details['categories'] = [ category.text.encode(
-        'utf8') for category in item_categories ]
+    details['categories'] = [category.text.encode(
+        'utf8') for category in item_categories]
     details['udemy_link'] = get_udemy_course_url(course_url)
 
     return details
@@ -125,9 +126,9 @@ def get_udemy_course_url(course_url):
     course_soup = get_course_soup(course_url)
     udemy_link = ''
     link = course_soup.find('div', {'class': 'link-holder'}) \
-                        .find('a') \
-                        .get('href') \
-                        .encode('utf8')
+        .find('a') \
+        .get('href') \
+        .encode('utf8')
 
     if "udemy" in link:
         return link
@@ -136,14 +137,16 @@ def get_udemy_course_url(course_url):
         udemy_link = link.split('&')[2].split('=')[1]
         udemy_link = urllib.unquote(udemy_link).decode('utf8')
     except IndexError as e:
-        logger.warning("Error occured. Unable to parse url: {url} - {exception}. Trying another method.".format(url=link, exception=e))
+        logger.warning(
+            "Error occured. Unable to parse url: {url} - {exception}. Trying another method.".format(url=link, exception=e))
         try:
             udemy_link = requests.get(link)
 
             if udemy_link.status_code == 200:
                 udemy_link = udemy_link.url.encode('utf8')
         except Exception as e:
-            logger.warning("Still unable to parse url: {url} - {exception}.".format(url=link, exception=e))
+            logger.warning(
+                "Still unable to parse url: {url} - {exception}.".format(url=link, exception=e))
 
     return udemy_link
 
@@ -153,24 +156,27 @@ def get_course_url(course):
         'h3', {'class': 'entry-title'}).find('a').get('href')
     return course_url
 
-def display_to_screen(interests, details):
-    interests = [ interest.strip() for interest in interests.split(',') ]
 
-    display = [ interest for interest in interests if interest in details['categories'] ]
+def display_to_screen(interests, details):
+    interests = [interest.strip() for interest in interests.split(',')]
+
+    display = [
+        interest for interest in interests if interest in details['categories']]
 
     for interest in interests:
         if interest in details['categories'] \
-            or interest in details['title'] \
-            or interest in details['description']:
-                return True
+                or interest in details['title'] \
+                or interest in details['description']:
+            return True
 
     return False
 
 
 def main():
     args = docopt(__doc__, version='v0.0.1')
+
     if not is_connected():
-        raise
+        return
 
     url = "http://onlinecourses.ooo/page/{page_number}"
     num_of_pages = int(args['--pages'])
