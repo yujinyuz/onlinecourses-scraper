@@ -30,6 +30,7 @@ Author:
 import logging
 import requests
 import urllib
+import sys
 from bs4 import BeautifulSoup
 from docopt import docopt
 from requests.exceptions import ConnectionError
@@ -58,8 +59,8 @@ def is_connected():
     try:
         test_url = "https://google.com"
         requests.get(test_url)
-    except ConnectionError as e:
-        raise Exception("You are not connected to the internet.")
+    except ConnectionError:
+        raise Exception('You are not connected to the internet.')
     else:
         logger.info("Connected to the internet. Proceeding...")
         return True
@@ -125,10 +126,8 @@ def get_course_details(course):
 def get_udemy_course_url(course_url):
     course_soup = get_course_soup(course_url)
     udemy_link = ''
-    link = course_soup.find('div', {'class': 'link-holder'}) \
-        .find('a') \
-        .get('href') \
-        .encode('utf8')
+    link = course_soup.find(
+        'div', {'class': 'link-holder'}).find('a').get('href').encode('utf8')
 
     if "udemy" in link:
         return link
@@ -160,9 +159,6 @@ def get_course_url(course):
 def display_to_screen(interests, details):
     interests = [interest.strip() for interest in interests.split(',')]
 
-    display = [
-        interest for interest in interests if interest in details['categories']]
-
     for interest in interests:
         if interest in details['categories'] \
                 or interest in details['title'] \
@@ -174,9 +170,8 @@ def display_to_screen(interests, details):
 
 def main():
     args = docopt(__doc__, version='v0.0.1')
-
     if not is_connected():
-        return
+        sys.exit(1)
 
     url = "http://onlinecourses.ooo/page/{page_number}"
     num_of_pages = int(args['--pages'])
