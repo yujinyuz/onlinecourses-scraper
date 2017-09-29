@@ -59,7 +59,7 @@ def is_connected():
         test_url = "https://www.google.com"
         urllib.urlopen(test_url)
     except:
-        raise('Error: Unable to connect to the internet.')
+        raise Exception('Error: Unable to connect to the internet.')
     else:
         logger.info("Connected to the internet. Proceeding...")
         return True
