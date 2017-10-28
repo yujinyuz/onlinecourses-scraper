@@ -55,7 +55,7 @@ def fetch_request(url):
 
 
 def fetch_pages(pages=1):
-
+    """Fetches the page and generates a soup for each page."""
     page_soups = []
 
     for page in range(pages):
@@ -67,6 +67,7 @@ def fetch_pages(pages=1):
 
 
 def fetch_courses(soups):
+    """Fetches each course inside a given page."""
     courses = []
     for soup in soups:
         course = soup.find_all('div', class_='item-frame')
@@ -76,6 +77,7 @@ def fetch_courses(soups):
 
 
 def parse_course_details(course_pages):
+    """Parses the course details and returns the details as a dictionary."""
     course_details = []
 
     for course_page in course_pages:
@@ -96,6 +98,7 @@ def parse_course_details(course_pages):
 
 
 def parse_udemy_course_url(course_url):
+    """Parses or generates a udemy course url of a given link inside a page."""
     response = fetch_request(course_url)
     course_soup = BeautifulSoup(response.text, 'lxml')
 
@@ -112,6 +115,7 @@ def parse_udemy_course_url(course_url):
 
 
 def print_courses(course_details):
+    """Display the course details on the console."""
     for course in course_details:
         print(print_template.format(sep="=" * 79, title=course['title'], description=course['description'], categories=course['categories'], udemy_link=course['udemy_link'], creation_date=course['creation_date']))
 
