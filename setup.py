@@ -25,7 +25,7 @@ test_requirements = [
 
 setup(
     name='onlinecourses_ooo',
-    version='0.1.0',
+    version='0.1.0b1',
     description="My personal scraper for https://onlinecourses.ooo",
     long_description=readme + '\n\n' + history,
     author="Eugene Essun Oliveros",
