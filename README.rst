@@ -28,7 +28,8 @@ My personal scraper for https://onlinecourses.ooo
 Features
 --------
 
-* TODO
+* Fetch udemy courses from https://onlinecourses.ooo
+* (TODO) Filter interests, and date.
 
 Credits
 ---------
