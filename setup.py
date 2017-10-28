@@ -12,7 +12,10 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    # TODO: put package requirements here
+    'beautifulsoup4',
+    'docopt',
+    'lxml',
+    'requests',
 ]
 
 setup_requirements = [
@@ -25,7 +28,7 @@ test_requirements = [
 
 setup(
     name='onlinecourses_ooo',
-    version='0.1.0b1',
+    version='0.1.0b2',
     description="My personal scraper for https://onlinecourses.ooo",
     long_description=readme + '\n\n' + history,
     author="Eugene Essun Oliveros",
