@@ -41,8 +41,8 @@ setup(
     zip_safe=False,
     keywords='onlinecourses_ooo',
     classifiers=[
-        'Development Status :: Beta',
-        'Intended Audience :: Devs and People who know PyPI',
+        'Development Status :: 4 - Beta',
+        'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3.3',
